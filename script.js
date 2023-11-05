@@ -4,7 +4,7 @@ import zim from "https://zimjs.org/cdn/01/zim";
 // and https://zimjs.com/learn
 // and https://zimjs.com/docs
 
-new Frame(FIT, window.innerWidth, window.innerHeight, "black", "black", ready, "/assets/people.png");
+new Frame(FIT, window.innerWidth, 300, "black", "black", ready, "/assets/people.png");
 function ready() {
    
 	// given F (Frame), S (Stage), W (width), H (height)
