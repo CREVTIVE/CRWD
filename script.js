@@ -190,7 +190,7 @@ function resize () {
 
   // Adjust the number of peeps based on screen width
   let peepsToRender = [...allPeeps];
-  if (stage.width < 768) {
+  if (stage.width < 810) {
     peepsToRender.length = Math.floor(peepsToRender.length * 0.4);  // Keep only 40% of peeps on screens under 768px
   }
 
