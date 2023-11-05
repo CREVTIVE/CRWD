@@ -2,7 +2,7 @@ console.clear()
 console.log('crowd')
 
 const config = {
-  src: '/assets/people.webp',
+  src: '/assets/people.webp',  // Changed source
   rows: 15,
   cols: 7
 }
@@ -27,7 +27,6 @@ const getRandomFromArray = (array) => (
 
 const resetPeep = ({ stage, peep }) => {
   const direction = Math.random() > 0.5 ? 1 : -1
-  // using an ease function to skew random to lower values to help hide that peeps have no legs
   const offsetY = 100 - 250 * gsap.parseEase('power2.in')(Math.random())
   const startY = stage.height - peep.height + offsetY
   let startX
@@ -144,7 +143,6 @@ const crowd = []
 function init () {  
   createPeeps()
   
-  // resize also (re)populates the stage
   resize()
 
   gsap.ticker.add(render)
@@ -189,14 +187,20 @@ function resize () {
   
   crowd.length = 0
   availablePeeps.length = 0
-  availablePeeps.push(...allPeeps)
+
+  // Adjust the number of peeps based on screen width
+  let peepsToRender = [...allPeeps];
+  if (stage.width < 768) {
+    peepsToRender.length = Math.floor(peepsToRender.length * 0.6);  // Keep only 60% of peeps on screens under 768px
+  }
+
+  availablePeeps.push(...peepsToRender)
   
   initCrowd()
 }
 
 function initCrowd () {
   while (availablePeeps.length) {
-    // setting random tween progress spreads the peeps out
     addPeepToCrowd().walk.progress(Math.random())
   }
 }
