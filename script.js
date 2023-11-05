@@ -2,7 +2,7 @@ console.clear()
 console.log('crowd')
 
 const config = {
-  src: '/assets/people.webp',
+  src: '/assets/people.webp',  // Changed source
   rows: 15,
   cols: 7
 }
@@ -27,12 +27,11 @@ const getRandomFromArray = (array) => (
 
 const resetPeep = ({ stage, peep }) => {
   const direction = Math.random() > 0.5 ? 1 : -1
-  // using an ease function to skew random to lower values to help hide that peeps have no legs
   const offsetY = 100 - 250 * gsap.parseEase('power2.in')(Math.random())
   const startY = stage.height - peep.height + offsetY
   let startX
   let endX
-  
+
   if (direction === 1) {
     startX = -peep.width
     endX = stage.width
@@ -42,11 +41,11 @@ const resetPeep = ({ stage, peep }) => {
     endX = 0
     peep.scaleX = -1
   }
-  
+
   peep.x = startX
   peep.y = startY
   peep.anchorY = startY
-  
+
   return {
     startX,
     startY,
@@ -63,7 +62,7 @@ const normalWalk = ({ peep, props }) => {
 
   const xDuration = 10
   const yDuration = 0.25
-  
+
   const tl = gsap.timeline()
   tl.timeScale(randomRange(0.5, 1.5))
   tl.to(peep, {
@@ -77,7 +76,7 @@ const normalWalk = ({ peep, props }) => {
     yoyo: true,
     y: startY - 10
   }, 0)
-    
+
   return tl
 }
 
@@ -94,30 +93,31 @@ class Peep {
   }) {
     this.image = image
     this.setRect(rect)
-    
+
     this.x = 0
     this.y = 0
     this.anchorY = 0
     this.scaleX = 1
+    this.scale = 0.5 // Add a scale property
     this.walk = null
   }
-  
+
   setRect (rect) {
     this.rect = rect
-    this.width = rect[2]
-    this.height = rect[3]
-    
+    this.width = rect[2] * this.scale // Scale the width
+    this.height = rect[3] * this.scale // Scale the height
+
     this.drawArgs = [
       this.image,
       ...rect,
       0, 0, this.width, this.height
-    ]  
+    ]
   }
-  
+
   render (ctx) {
     ctx.save()
     ctx.translate(this.x, this.y)
-    ctx.scale(this.scaleX, 1)
+    ctx.scale(this.scaleX * this.scale, this.scale) // Scale the drawing
     ctx.drawImage(...this.drawArgs)
     ctx.restore()
   }
@@ -141,9 +141,9 @@ const allPeeps = []
 const availablePeeps = []
 const crowd = []
 
-function init () {  
+function init () {
   createPeeps()
-  
+
   // resize also (re)populates the stage
   resize()
 
@@ -163,7 +163,7 @@ function createPeeps () {
   const total = rows * cols
   const rectWidth = width / rows
   const rectHeight = height / cols
-  
+
   for (let i = 0; i < total; i++) {
     allPeeps.push(new Peep({
       image: img,
@@ -174,7 +174,7 @@ function createPeeps () {
         rectHeight,
       ]
     }))
-  }  
+  }
 }
 
 function resize () {
@@ -182,15 +182,15 @@ function resize () {
   stage.height = canvas.clientHeight
   canvas.width = stage.width * devicePixelRatio
   canvas.height = stage.height * devicePixelRatio
-  
+
   crowd.forEach((peep) => {
     peep.walk.kill()
   })
-  
+
   crowd.length = 0
   availablePeeps.length = 0
   availablePeeps.push(...allPeeps)
-  
+
   initCrowd()
 }
 
@@ -213,12 +213,12 @@ function addPeepToCrowd () {
     removePeepFromCrowd(peep)
     addPeepToCrowd()
   })
-  
+
   peep.walk = walk
-  
+
   crowd.push(peep)
   crowd.sort((a, b) => a.anchorY - b.anchorY)
-  
+
   return peep
 }
 
@@ -231,10 +231,10 @@ function render () {
   canvas.width = canvas.width
   ctx.save()
   ctx.scale(devicePixelRatio, devicePixelRatio)
-  
+
   crowd.forEach((peep) => {
     peep.render(ctx)
   })
-  
+
   ctx.restore()
 }
