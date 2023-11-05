@@ -2,7 +2,7 @@ console.clear()
 console.log('crowd')
 
 const config = {
-  src: 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/175711/open-peeps-sheet.png',
+  src: '/assets/people.webp',
   rows: 15,
   cols: 7
 }
